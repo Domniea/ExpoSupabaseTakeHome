@@ -2,7 +2,7 @@ import { View, Text, TextInput, StyleSheet } from 'react-native'
 import React from 'react'
 import { useForm, Controller, useController } from 'react-hook-form'
 
-const RInput = (props) => {
+const ReusableInput = (props) => {
 
   const {
     name,
@@ -45,6 +45,7 @@ const RInput = (props) => {
                     onBlur={onBlur}
                     placeholder={name}
                     style={styles.input}
+                    autoCapitalize='none'
                     />
                   </View>
                   {
@@ -79,4 +80,4 @@ error: {
 }
 })
 
-export default RInput
+export default ReusableInput

@@ -3,20 +3,21 @@ import React, { useState, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigation } from '@react-navigation/native'
 
-import { AuthContext } from '../../context/AuthProvider/AuthProvider'
+import { AuthContext } from '../../../context/AuthProvider/AuthProvider'
 
 //Componant
-import RInput from '../../componants/RTextInput'
-import RButton from '../../componants/ReusableButton'
+import ReusableInput from '../../../componants/ReusableInput'
+import ReusableButton from '../../../componants/ReusableButton'
 
 
 const CreateAccount = () => {
 
     const {
-        test
+        signUpWithEmail,
+        signInWithEmail
     } = useContext(AuthContext)
 
-console.log(test)
+
 
     const navigation = useNavigation()
 
@@ -25,6 +26,12 @@ console.log(test)
         handleSubmit
     } = useForm()
 
+    const onSignUpPress = (data) => {
+        const { email, password } = data
+    console.log(data)
+    signUpWithEmail(email, password)
+    }
+
     const onGoBackPress = () => {
         console.log('back')
         navigation.goBack()
@@ -32,15 +39,21 @@ console.log(test)
 
   return (
     <View style={styles.root}>
-        <Text style={styles.header}>CreateAccount</Text>
+        <Text style={styles.header}>Set Up An Account</Text>
         <View style={styles.login}>
-            <RInput
+            <ReusableInput
                 control={control}
                 name='email'
                 placeholder='email'
             />
-            <RButton
+            <ReusableInput
+                control={control}
+                name='password'
+                placeholder='password'
+            />
+            <ReusableButton
                 text='Sign Up'
+                onPress={handleSubmit(onSignUpPress)}
             />
 
         </View>
@@ -51,7 +64,7 @@ console.log(test)
                 style={styles.footer}
                 onPress={onGoBackPress}
             >
-                Go Back
+                Already A User?
             </Text>
         </Pressable>
     </View>

@@ -1,7 +1,7 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native'
 import React from 'react'
 
-const ReusableButton = (props) => {
+const ReuseableButton = (props) => {
 
   const {
     text,
@@ -19,7 +19,7 @@ const ReusableButton = (props) => {
 }
 
 
-export default ReusableButton
+export default ReuseableButton
 
 const styles = StyleSheet.create({
   container: {

@@ -3,8 +3,8 @@ import React from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useNavigation } from '@react-navigation/native'
 
-import RInput from '../../componants/RTextInput'
-import RButton from '../../componants/ReusableButton'
+import ReusableInput from '../../../componants/ReusableInput'
+import ReusableButton from '../../../componants/ReusableButton'
 
 const LoginScreen = () => {
 
@@ -31,19 +31,19 @@ const LoginScreen = () => {
         <View style={styles.root}>
           <Text style={styles.header}>User Login</Text>
           <View style={styles.login}>
-            <RInput
+            <ReusableInput
               name='email'
               control={control}
               rules={{ required: 'Email is required' }}
               placeholder='Email'
             />
-            <RInput
+            <ReusableInput
               name='password'
               control={control}
               rules={{ required: 'Password is required' }}
               placeholder='Password'
             />
-            <RButton
+            <ReusableButton
               text={'Submit'}
               onPress={handleSubmit(onSubmitPress)}
             />
@@ -53,7 +53,7 @@ const LoginScreen = () => {
             style={styles.footer}
             onPress={onCreateAccountPress}
             >
-              Already A User?
+              Create Account
            </Text>
           </Pressable>
 

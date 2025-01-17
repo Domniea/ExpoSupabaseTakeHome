@@ -9,15 +9,17 @@ import {
 import { useForm, Controller } from 'react-hook-form'
 
 import { AuthProvider } from './context/AuthProvider/AuthProvider';
+import { NavigationContainer } from '@react-navigation/native';
 
 //Componants
-import Input from './componants/RTextInput';
-import RButton from './componants/ReusableButton';
-import RInput from './componants/RTextInput';
+import Input from './componants/ReusableInput';
+import ReusableButton from './componants/ReusableButton';
+import ReusableInput from './componants/ReusableInput';
 
-import LoginScreen from './screens/login';
+import LoginScreen from './screens/Auth/login';
 import AuthStack from './navigation/AuthStack';
-import { NavigationContainer } from '@react-navigation/native';
+import MainStack from './navigation/MainStack';
+import MasterStack from './navigation/MasterStack'
 
 export default function App() {
 
@@ -35,7 +37,7 @@ export default function App() {
     <View style={styles.root}>
       <AuthProvider>
         <NavigationContainer>
-          <AuthStack/>
+          <MasterStack/>
         </NavigationContainer>
       </AuthProvider>
       <StatusBar style="auto" />
