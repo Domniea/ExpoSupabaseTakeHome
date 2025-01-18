@@ -1,5 +1,5 @@
 import { Alert, StyleSheet, Text, View, AppState } from 'react-native'
-import React, { useState, createContext } from 'react'
+import React, { useState, createContext, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 // import { Button, Input } from '@rneui/themed'
 
@@ -10,21 +10,34 @@ const AuthProvider = (props) => {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [ session, setSession ]= useState(false)
-  
+  const [user,setUser] = useState()
 
-  
-  async function signInWithEmail() {
+  // async function getUser() {
+  //   const { data, error } = await supabase.auth.getUserIdentities()
+  //   console.log(data)
+  //   setUser(data)
+
+    
+  // }
+
+// getUser(0)
+
+  async function signInWithEmail(email, password) {
     setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error, data } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     })
+
+    if(data) {
+      setSession(data.session)
+    }
 
     if (error) Alert.alert(error.message)
     setLoading(false)
   }
 
-  async function signUpWithEmail(email, password) {
+  async function signUpWithEmail(email, password, firstName, lastName) {
     setLoading(true)
     const {
       data: { session },
@@ -32,6 +45,12 @@ const AuthProvider = (props) => {
     } = await supabase.auth.signUp({
       email: email,
       password: password,
+      options: {
+        data: {
+          first_name: firstName,
+          last_name: lastName,
+        },
+      },
     })
 
     
@@ -41,18 +60,36 @@ const AuthProvider = (props) => {
     
     
     if (error) Alert.alert(error.message)
-      if (!session) Alert.alert('Please check your inbox for email verification!')
-        setLoading(false)
-    }
+    if (!session) Alert.alert('Please check your inbox for email verification!')
+    setLoading(false)
+  }
     
-    
+  async function signOutUser() {
+      const { error} = supabase.auth.signOut()
+      
+      setSession(false)
+      if (error) Alert.alert(error.message)
+      
+  }
+
+  async function isLoggedIn() {
+    const { data: { user } } = await supabase.auth.getUser(); 
+    setUser(user)
+    return !!user; // Returns true if a user is logged in, otherwise false
+}
+
+  useEffect(()=> {
+    isLoggedIn()
+  },[session])
   
   return (
     <AuthContext.Provider
         value={{
             signUpWithEmail,
             signInWithEmail,
-            session
+            signOutUser,
+            session,
+            user
         }}
     >
         {props.children}

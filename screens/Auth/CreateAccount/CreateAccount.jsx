@@ -27,9 +27,9 @@ const CreateAccount = () => {
     } = useForm()
 
     const onSignUpPress = (data) => {
-        const { email, password } = data
-    console.log(data)
-    signUpWithEmail(email, password)
+        const { email, password, firstName, lastName } = data
+        console.log(data)
+        signUpWithEmail(email, password, firstName, lastName)
     }
 
     const onGoBackPress = () => {
@@ -50,6 +50,16 @@ const CreateAccount = () => {
                 control={control}
                 name='password'
                 placeholder='password'
+            />
+            <ReusableInput
+                control={control}
+                name='firstName'
+                placeholder='firstName'
+            />
+            <ReusableInput
+                control={control}
+                name='lastName'
+                placeholder='lastName'
             />
             <ReusableButton
                 text='Sign Up'
@@ -90,10 +100,10 @@ const styles = StyleSheet.create({
     footer: {
         margin: 15,
         color: '#74886C'
-      },
-      login: {
+    },
+    login: {
         alignItems: 'center',
         width: '80%',
         margin: 25
-      }
+    }
 })

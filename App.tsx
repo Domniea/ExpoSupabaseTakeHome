@@ -8,8 +8,11 @@ import {
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form'
 
-import { AuthProvider } from './context/AuthProvider/AuthProvider';
 import { NavigationContainer } from '@react-navigation/native';
+
+//Context
+import { AuthProvider } from './context/AuthProvider/AuthProvider';
+import { PostsProvider } from './context/PostsProvider/PostsProvider';
 
 //Componants
 import Input from './componants/ReusableInput';
@@ -36,9 +39,11 @@ export default function App() {
   return (
     <View style={styles.root}>
       <AuthProvider>
-        <NavigationContainer>
-          <MasterStack/>
-        </NavigationContainer>
+        <PostsProvider>
+          <NavigationContainer>
+            <MasterStack/>
+          </NavigationContainer>
+        </PostsProvider>
       </AuthProvider>
       <StatusBar style="auto" />
     </View>

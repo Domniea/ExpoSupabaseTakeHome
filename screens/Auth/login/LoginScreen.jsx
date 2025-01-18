@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, Button, TextInput, Pressable } from 'react-native'
-import React from 'react'
+import React ,{ useState, useContext}from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useNavigation } from '@react-navigation/native'
+import { AuthContext } from '../../../context/AuthProvider/AuthProvider'
 
 import ReusableInput from '../../../componants/ReusableInput'
 import ReusableButton from '../../../componants/ReusableButton'
@@ -11,15 +12,19 @@ const LoginScreen = () => {
     const {
        control,
        handleSubmit,
-       reset
     } = useForm()
 
+    const {
+      signInWithEmail
+    } = useContext(AuthContext)
+    
     const navigation = useNavigation()
 
     const onSubmitPress = (data) => {
+      const { email, password } = data
+      console.log(data)
+      signInWithEmail(email, password)
       console.log('onSubmitPress')
-        console.log(data)
-        reset()
     }
 
     const onCreateAccountPress = () => {
