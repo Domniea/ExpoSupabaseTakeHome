@@ -5,6 +5,7 @@ import {
   TextInput,
   Button,
   View,
+  SafeAreaView
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form'
 
@@ -37,25 +38,23 @@ export default function App() {
 
 
   return (
-    <View style={styles.root}>
-      <AuthProvider>
-        <PostsProvider>
-          <NavigationContainer>
-            <MasterStack/>
-          </NavigationContainer>
-        </PostsProvider>
-      </AuthProvider>
+      <SafeAreaView style={styles.root}>
+        <AuthProvider>
+          <PostsProvider>
+            <NavigationContainer>
+              <MasterStack/>
+            </NavigationContainer>
+          </PostsProvider>
+        </AuthProvider>
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    // backgroundColor: '#fff',
-    // alignItems: 'center',
-    // justifyContent: 'center',
+    margin: '5%'
   },
   login: {
     alignItems: 'center',

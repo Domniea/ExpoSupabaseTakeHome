@@ -10,6 +10,7 @@ import { PostsContext } from '../../../context/PostsProvider/PostsProvider'
 
 //Componants
 import ReuseableButton from '../../../componants/ReusableButton'
+import PostComponant from '../../../componants/PostComponant'
 
 const Profile = () => {
 
@@ -19,7 +20,9 @@ const Profile = () => {
     } = useContext(AuthContext)
 
     const {
-        allUserPosts
+        singleUsersPosts,
+        setSingleUsersPosts
+        
     } = useContext(PostsContext)
 
     const navigation = useNavigation()
@@ -36,29 +39,44 @@ const Profile = () => {
         navigation.navigate('Posts')
     }
  
+   
+    const posts = singleUsersPosts.map((single, i) => {
+        const { id, user_post } = single
+        return (
+          <PostComponant
+            key={i}
+            user_post={user_post}
+            // style={styles.post}
+          />
+        )
+      })
 
-    // // Create a function to handle inserts
-    // const handleInserts = (payload) => {
-    // console.log('Change received!', payload)
-    //  }
-  
-    // // Listen to inserts
-    // supabase
-    //     .channel('public')
-    //     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'posts' }, handleInserts)
-    //     .subscribe()
+
+//   const channel2 = supabase
+//         .channel('table-db-changes')
+//         .on(
+//             'postgres_changes',
+//             {
+//                 event: '*',
+//                 // schema: 'public',
+//                 table: 'posts',
+//             },
+//                (payload) => {
+//                 return setSingleUsersPosts([...singleUsersPosts, payload.new])
+//                }
+//         )
+//         .subscribe()
 
   return (
     <View style={styles.root}>
       <Text style={styles.header}>Welcome {firstName}</Text>
+      {posts}
       <View style={styles.buttonContainer}>
-        <View>
-            <Pressable
-                style={styles.footer}
-            >
+        <View style={styles.cont}>
+            <Pressable >
                 <Text 
+                    style={styles.pressableText}
                     onPress={onPostsPagePress}
-                    style={styles.footer}
                 >
                     Go To Posts
                 </Text>
@@ -78,7 +96,7 @@ export default Profile
 const styles = StyleSheet.create({
     root: {
       flex: 1,
-      justifyContent: 'space-between',
+      justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: 'blue',
       width: '100%',
@@ -97,8 +115,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     margin: '10%'
   },
-  footer: {
-    fontSize: 25,
-    color: '#74886C'
+  pressableText: {
+    fontSize: 15,
+    color: '#74886C',
+    fontWeight: 'bold',
   },
+  cont: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '80%',
+    padding: 15,
+    borderColor: '#3C5B47',
+    borderWidth: 2,
+    borderRadius: 150,
+  }
   })

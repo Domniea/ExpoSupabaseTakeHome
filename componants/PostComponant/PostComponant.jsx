@@ -18,7 +18,7 @@ export default PostComponant
 
 const styles = StyleSheet.create({
     root: {
-        flex: 1,
         margin: 15
+        // margin: 1
     }
 })

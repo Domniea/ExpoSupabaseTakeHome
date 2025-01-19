@@ -6,21 +6,12 @@ import { supabase } from '../../lib/supabase'
 const AuthContext = createContext()
 
 const AuthProvider = (props) => {
-  const [email, setEmail] = useState('')
+  const [emailAddress, setEmailAddress] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [ session, setSession ]= useState(false)
-  const [user,setUser] = useState()
+  const [user, setUser] = useState()
 
-  // async function getUser() {
-  //   const { data, error } = await supabase.auth.getUserIdentities()
-  //   console.log(data)
-  //   setUser(data)
-
-    
-  // }
-
-// getUser(0)
 
   async function signInWithEmail(email, password) {
     setLoading(true)
@@ -75,8 +66,9 @@ const AuthProvider = (props) => {
   async function isLoggedIn() {
     const { data: { user } } = await supabase.auth.getUser(); 
     setUser(user)
+    setEmailAddress(user.email)
     return !!user; // Returns true if a user is logged in, otherwise false
-}
+  }
 
   useEffect(()=> {
     isLoggedIn()
@@ -89,7 +81,9 @@ const AuthProvider = (props) => {
             signInWithEmail,
             signOutUser,
             session,
-            user
+            user,
+            emailAddress
+            
         }}
     >
         {props.children}

@@ -24,7 +24,6 @@ export default ReuseableButton
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#3C5B47',
-
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 5,
@@ -34,6 +33,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#FFF',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontSize: 20
   }
 })

@@ -17,14 +17,16 @@ const LandingPage = () => {
 
   const {
     signOutUser,
-    user
+    user,
+    emailAddress
   } = useContext(AuthContext)
 
   const {
-    allUsersPosts
+    allUsersPosts,
+    setAllUsersPosts
   } = useContext(PostsContext)
 
-  console.log('All Users Posts landing page', allUsersPosts)
+  // console.log('All Users Posts landing page', allUsersPosts)
 
   const {
     control,
@@ -33,6 +35,26 @@ const LandingPage = () => {
 
   const navigation = useNavigation()
 
+  const submitPost = (data) => {
+
+  }
+
+
+
+
+  async function onSubmitPress (res) {
+
+    const { data, error } = await supabase
+    .from('posts')
+    .insert([{email: emailAddress, user_post: res.post}])
+
+    if(error){
+      console.error('error inserting data:', error)
+    }
+    else {
+      console.log('Data successfully inserted:', data)
+    }
+  }
 
   const onGoToProfilePress =() => {
     console.log('onGoToProfilePress')
@@ -45,33 +67,47 @@ const LandingPage = () => {
       <PostComponant
         key={i}
         user_post={user_post}
+        // style={styles.post}
       />
     )
   })
 
 
+  // const channel1 = supabase
+  //         .channel('table-db-changes')
+  //         .on(
+  //             'postgres_changes',
+  //             {
+  //                 event: '*',
+  //                 // schema: 'public',
+  //                 table: 'posts',
+  //             },
+  //                (payload) => {
+  //                 return setAllUsersPosts([...allUsersPosts, payload.new])
+  //                }
+  //         )
+  //         .subscribe()
+
+
+
   return (
     <View style={styles.root}>
-      <Text style={styles.header}>LandingPage</Text>
-      <View style={styles.post}>
-        {posts}
-      </View>
       <ReusableInput
         control={control}
         name='post'
         placeholder='New Post'
-
-      />
-      {/* <ReuseableButton
-      text='Log Out'
-      onPress={onSignOutPress}
+        />
+ 
+      <ReuseableButton
+      text='Submit Post'
+      onPress={handleSubmit(onSubmitPress)}
       style={styles.footer}
-      /> */}
-      <View>
-        <Pressable
-            style={styles.footer}
-        >
+      />
+          {posts}
+      <View style={styles.pressableContainer}>
+        <Pressable >
             <Text 
+              style={styles.pressableText}
                 onPress={onGoToProfilePress}
             >
                 Go To Profile Page
@@ -89,8 +125,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'blue',
     width: '100%',
+    // padding: '10%',
     backgroundColor: '#FFF'
 },
 header: {
@@ -98,12 +134,33 @@ header: {
   top: 25,
   fontSize: 25
 },
-footer: {
-  margin: 15,
-  color: '#74886C'
-},
+
 post: {
+  flex: 1,
   height: '30%',
   backgroundColorcolor: 'green'
+},
+footer: {
+  fontSize: 20,
+  color: '#74886C',
+  // borderColor: 'black',
+  // borderWidth: 2,
+  // borderRadius: 150,
+  width: '100%',
+  // paddng: 15
+},
+pressableText: {
+  fontSize: 15,
+  color: '#74886C',
+  fontWeight: 'bold'
+},
+pressableContainer: {
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: '80%',
+  padding: 15,
+  borderColor: '3C5B47',
+  borderWidth: 2,
+  borderRadius: 150,
 }
 })
