@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Pressable, ScrollView } from 'react-native'
 import React ,{useContext, useEffect}from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { supabase } from '../../../lib/supabase'
@@ -20,6 +20,7 @@ const Profile = () => {
     } = useContext(AuthContext)
 
     const {
+        getSingleUsersPosts,
         singleUsersPosts,
         setSingleUsersPosts
         
@@ -46,7 +47,8 @@ const Profile = () => {
           <PostComponant
             key={i}
             user_post={user_post}
-            // style={styles.post}
+            id={id}
+            visibleDelete={true}
           />
         )
       })
@@ -67,24 +69,59 @@ const Profile = () => {
 //         )
 //         .subscribe()
 
+    
+//SUBSCRIPTION AND INITITIAL FETCH
+    useEffect(() => {
+        getSingleUsersPosts()
+
+        const channel2 = supabase
+        .channel('chanel2')
+        .on(
+            'postgres_changes',
+            {
+                event: '*',
+                // schema: 'public',
+                table: 'posts',
+            },
+            (payload) => {
+                if(payload.eventType === 'INSERT') {
+                    console.log('boobs and butts')
+                    return setSingleUsersPosts([...singleUsersPosts, payload.new])
+                } else if(payload.eventType === 'DELETE') {
+                    // 
+                    getSingleUsersPosts()
+                }
+                
+            }
+        )
+        .subscribe()
+
+        return () => supabase.removeChannel(channel2)
+
+    }, [singleUsersPosts.length])
+  
   return (
     <View style={styles.root}>
       <Text style={styles.header}>Welcome {firstName}</Text>
-      {posts}
+      <ScrollView style={styles.scrollView}>
+        {posts}
+      </ScrollView>
       <View style={styles.buttonContainer}>
-        <View style={styles.cont}>
-            <Pressable >
+       
+            <Pressable
+                style={styles.pressableContainer}
+                onPress={onPostsPagePress}
+            >
                 <Text 
-                    style={styles.pressableText}
-                    onPress={onPostsPagePress}
+                    style={styles.pressableText}  
                 >
                     Go To Posts
                 </Text>
             </Pressable>
-        </View>
+
             <ReuseableButton
-            text='Log Out'
-            onPress={onSignOutPress}
+                text='Log Out'
+                onPress={onSignOutPress}
             />
         </View>
     </View>
@@ -105,8 +142,14 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 35,
     margin: '5%'
-    // position: 'absolute',
-    // top: 25
+  },
+  scrollView: {
+    width: '100%',
+    margin: 20,
+    padding: '5%',
+    borderColor: '#ADAD98',
+    borderWidth: 3,
+    borderRadius: 15
   },
   buttonContainer: {
     width: '100%',
@@ -118,15 +161,15 @@ const styles = StyleSheet.create({
   pressableText: {
     fontSize: 15,
     color: '#74886C',
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
-  cont: {
+  pressableContainer: {
     justifyContent: 'center',
     alignItems: 'center',
     width: '80%',
     padding: 15,
-    borderColor: '#3C5B47',
+    borderColor: '3C5B47',
     borderWidth: 2,
     borderRadius: 150,
-  }
-  })
+  },
+})

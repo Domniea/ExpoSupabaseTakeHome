@@ -24,89 +24,120 @@ const PostsProvider = (props) => {
     async function getSingleUsersPosts () {
         if(emailAddress){
             const { data, error } = await supabase
-            .from('posts')
-            .select('user_post')
-            .eq('email', `${emailAddress}`)
-            .then((res) => {
-                setSingleUsersPosts(res.data)
-            })
-        }
+                .from('posts')
+                .select('*')
+                .eq('email', `${emailAddress}`)
+                .then((res) => {
+                    setSingleUsersPosts(res.data)
+                })
+            if(error) {
+                console.error('Error: ', error )
+            }
+            }
     }
     
 
     async function getAllUsersPosts() {
         const { data, error } = await supabase
-        .from('posts')
-        .select('*')
+            .from('posts')
+            .select('*')
+
+        if(error) {
+            console.error('Error: ', error )
+        }
     
         setAllUsersPosts(data)
     }
 
-    async function subscribe() {
-        const subscription = await supabase
-        .from('posts')
-        .on('*', (payload) => {
-            console.log('butts', payload)
-            setAllUsersPosts([...allUsersPosts, payload.new])
-        })
-        .subscribe()
+    async function deleteUserPost (id) {
+        const response = await supabase
+            .from('posts')
+            .delete()
+            .eq('id', id)
+            .select()
+            // .then((res => {
+            //     console.log(res)
+            // }))
+            console.log('DELETED')
+    console.log('response', response)
     }
 
-useEffect(() => {
-    const channel1 = supabase
-        .channel('chanel1')
-        .on(
-            'postgres_changes',
-            {
-                event: '*',
-                // schema: 'public',
-                table: 'posts',
-            },
-               (payload) => {
-                return setAllUsersPosts([...allUsersPosts, payload.new])
-               }
-        )
-        .subscribe()
 
-    return () => supabase.removeChannel(channel1)
+    // async function subscribe() {
+    //     const subscription = await supabase
+    //     .from('posts')
+    //     .on('*', (payload) => {
+    //         console.log('butts', payload)
+    //         setAllUsersPosts([...allUsersPosts, payload.new])
+    //     })
+    //     .subscribe()
+    // }
 
-}, [allUsersPosts])
+///THIS ONE
+// useEffect(() => {
+//     getAllUsersPosts()
 
-useEffect(() => {
-    const channel2 = supabase
-    .channel('chanel2')
-    .on(
-        'postgres_changes',
-        {
-            event: '*',
-            // schema: 'public',
-            table: 'posts',
-        },
-           (payload) => {
-            return setSingleUsersPosts([...singleUsersPosts, payload.new])
-           }
-    )
-    .subscribe()
+//     const channel1 = supabase
+//         .channel('chanel1')
+//         .on(
+//             'postgres_changes',
+//             {
+//                 event: '*',
+//                 // schema: 'public',
+//                 table: 'posts',
+//             },
+//                (payload) => {
+//                 return setAllUsersPosts([...allUsersPosts, payload.new])
+//                }
+//         )
+//         .subscribe()
 
-    return () => supabase.removeChannel(channel2)
+//     return () => supabase.removeChannel(channel1)
 
-}, [singleUsersPosts])
+// }, [])
+
+
+//THIS ONE
+// useEffect(() => {
+//     getSingleUsersPosts()
+
+//     const channel2 = supabase
+//     .channel('chanel2')
+//     .on(
+//         'postgres_changes',
+//         {
+//             event: '*',
+//             // schema: 'public',
+//             table: 'posts',
+//         },
+//            (payload) => {
+//             return setSingleUsersPosts([...singleUsersPosts, payload.new])
+//            }
+//     )
+//     .subscribe()
+
+//     return () => supabase.removeChannel(channel2)
+
+// }, [])
        
-        
-    useEffect(() => {
-        getAllUsersPosts()
-        getSingleUsersPosts()
-        subscribe()
-    }, [user])
+  //THIS ONE      
+    // useEffect(() => {
+    //     getAllUsersPosts()
+    //     getSingleUsersPosts()
+    //     // subscribe()
+    // }, [user])
 
     
   return (
     <PostsContext.Provider
         value={{
-         allUsersPosts,
-         setAllUsersPosts,
-         singleUsersPosts,
-         setSingleUsersPosts
+            getAllUsersPosts,
+            allUsersPosts,
+            setAllUsersPosts,
+            getSingleUsersPosts,
+            singleUsersPosts,
+            setSingleUsersPosts,
+            deleteUserPost
         }}
     >
         {props.children}

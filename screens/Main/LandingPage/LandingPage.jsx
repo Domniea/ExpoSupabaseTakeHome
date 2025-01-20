@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, Pressable } from 'react-native'
-import React, { useState, useContext } from 'react'
+import { StyleSheet, Text, View, Pressable, ScrollView } from 'react-native'
+import React, { useState, useEffect, useContext } from 'react'
 import { AuthContext } from '../../../context/AuthProvider/AuthProvider'
 import { useForm } from 'react-hook-form'
 import { useNavigation } from '@react-navigation/native'
@@ -22,15 +22,16 @@ const LandingPage = () => {
   } = useContext(AuthContext)
 
   const {
+    getAllUsersPosts,
     allUsersPosts,
     setAllUsersPosts
   } = useContext(PostsContext)
 
-  // console.log('All Users Posts landing page', allUsersPosts)
 
   const {
     control,
-    handleSubmit
+    handleSubmit,
+    reset
   } = useForm()
 
   const navigation = useNavigation()
@@ -45,8 +46,10 @@ const LandingPage = () => {
   async function onSubmitPress (res) {
 
     const { data, error } = await supabase
-    .from('posts')
-    .insert([{email: emailAddress, user_post: res.post}])
+      .from('posts')
+      .insert([{email: emailAddress, user_post: res.post}])
+
+      reset()
 
     if(error){
       console.error('error inserting data:', error)
@@ -61,37 +64,44 @@ const LandingPage = () => {
     navigation.navigate('Profile')
   }
 
+
   const posts = allUsersPosts.map((single, i) => {
     const { id, user_post } = single
     return (
       <PostComponant
         key={i}
         user_post={user_post}
-        // style={styles.post}
+        id={id}
       />
     )
   })
-
-
-  // const channel1 = supabase
-  //         .channel('table-db-changes')
-  //         .on(
-  //             'postgres_changes',
-  //             {
-  //                 event: '*',
-  //                 // schema: 'public',
-  //                 table: 'posts',
-  //             },
-  //                (payload) => {
-  //                 return setAllUsersPosts([...allUsersPosts, payload.new])
-  //                }
-  //         )
-  //         .subscribe()
-
+ 2
+    useEffect(() => {
+        getAllUsersPosts()
+    
+        const channel1 = supabase
+            .channel('chanel1')
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    // schema: 'public',
+                    table: 'posts',
+                },
+                  (payload) => {
+                    return setAllUsersPosts([...allUsersPosts, payload.new])
+                  }
+            )
+            .subscribe()
+    
+        return () => supabase.removeChannel(channel1)
+    
+    }, [allUsersPosts.length])
 
 
   return (
     <View style={styles.root}>
+      
       <ReusableInput
         control={control}
         name='post'
@@ -101,19 +111,22 @@ const LandingPage = () => {
       <ReuseableButton
       text='Submit Post'
       onPress={handleSubmit(onSubmitPress)}
-      style={styles.footer}
       />
-          {posts}
-      <View style={styles.pressableContainer}>
-        <Pressable >
+      <ScrollView style={styles.scrollView}>
+        {posts}
+      </ScrollView>
+          
+        <Pressable 
+          style={styles.pressableContainer}
+          onPress={onGoToProfilePress}
+        >
             <Text 
               style={styles.pressableText}
-                onPress={onGoToProfilePress}
             >
                 Go To Profile Page
             </Text>
         </Pressable>
-      </View>
+
     </View>
   )
 }
@@ -128,39 +141,37 @@ const styles = StyleSheet.create({
     width: '100%',
     // padding: '10%',
     backgroundColor: '#FFF'
-},
-header: {
-  position: 'absolute',
-  top: 25,
-  fontSize: 25
-},
-
-post: {
-  flex: 1,
-  height: '30%',
-  backgroundColorcolor: 'green'
-},
-footer: {
-  fontSize: 20,
-  color: '#74886C',
-  // borderColor: 'black',
-  // borderWidth: 2,
-  // borderRadius: 150,
-  width: '100%',
-  // paddng: 15
-},
-pressableText: {
-  fontSize: 15,
-  color: '#74886C',
-  fontWeight: 'bold'
-},
-pressableContainer: {
-  justifyContent: 'center',
-  alignItems: 'center',
-  width: '80%',
-  padding: 15,
-  borderColor: '3C5B47',
-  borderWidth: 2,
-  borderRadius: 150,
-}
+  },
+  header: {
+    position: 'absolute',
+    top: 25,
+    fontSize: 25
+  },
+  scrollView: {
+    width: '100%',
+    margin: 20,
+    padding: '5%',
+    borderColor: '#ADAD98',
+    borderWidth: 3,
+    borderRadius: 15
+  },
+  post: {
+    flex: 1,
+    height: '30%',
+    backgroundColorcolor: 'green'
+  },
+  pressableText: {
+    fontSize: 15,
+    color: '#74886C',
+    fontWeight: 'bold'
+  },
+  pressableContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '80%',
+    padding: 15,
+    borderColor: '3C5B47',
+    borderWidth: 2,
+    borderRadius: 150,
+  },
 })

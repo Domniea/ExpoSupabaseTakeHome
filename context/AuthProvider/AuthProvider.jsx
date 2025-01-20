@@ -7,14 +7,13 @@ const AuthContext = createContext()
 
 const AuthProvider = (props) => {
   const [emailAddress, setEmailAddress] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
+
+
   const [ session, setSession ]= useState(false)
   const [user, setUser] = useState()
 
 
   async function signInWithEmail(email, password) {
-    setLoading(true)
     const { error, data } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
@@ -25,11 +24,10 @@ const AuthProvider = (props) => {
     }
 
     if (error) Alert.alert(error.message)
-    setLoading(false)
   }
 
   async function signUpWithEmail(email, password, firstName, lastName) {
-    setLoading(true)
+
     const {
       data: { session },
       error,
@@ -41,7 +39,7 @@ const AuthProvider = (props) => {
           first_name: firstName,
           last_name: lastName,
         },
-      },
+      }
     })
 
     
@@ -52,7 +50,6 @@ const AuthProvider = (props) => {
     
     if (error) Alert.alert(error.message)
     if (!session) Alert.alert('Please check your inbox for email verification!')
-    setLoading(false)
   }
     
   async function signOutUser() {
@@ -60,7 +57,6 @@ const AuthProvider = (props) => {
       
       setSession(false)
       if (error) Alert.alert(error.message)
-      
   }
 
   async function isLoggedIn() {
