@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Pressable, Touchable, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useState, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigation } from '@react-navigation/native'
@@ -38,46 +38,48 @@ const CreateAccount = () => {
     }
 
   return (
-    <View style={styles.root}>
-        <Text style={styles.header}>Set Up An Account</Text>
-        <View style={styles.login}>
-            <ReusableInput
-                control={control}
-                name='email'
-                placeholder='email'
-            />
-            <ReusableInput
-                control={control}
-                name='password'
-                placeholder='password'
-            />
-            <ReusableInput
-                control={control}
-                name='firstName'
-                placeholder='firstName'
-            />
-            <ReusableInput
-                control={control}
-                name='lastName'
-                placeholder='lastName'
-            />
-            <ReusableButton
-                text='Sign Up'
-                onPress={handleSubmit(onSignUpPress)}
-            />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.root}>
+            <Text style={styles.header}>Set Up An Account</Text>
+            <View style={styles.login}>
+                <ReusableInput
+                    control={control}
+                    name='email'
+                    placeholder='email'
+                />
+                <ReusableInput
+                    control={control}
+                    name='password'
+                    placeholder='password'
+                />
+                <ReusableInput
+                    control={control}
+                    name='firstName'
+                    placeholder='firstName'
+                />
+                <ReusableInput
+                    control={control}
+                    name='lastName'
+                    placeholder='lastName'
+                />
+                <ReusableButton
+                    text='Sign Up'
+                    onPress={handleSubmit(onSignUpPress)}
+                />
 
-        </View>
-        <Pressable
-            style={styles.footer}
-        >
-            <Text 
+            </View>
+            <Pressable
                 style={styles.footer}
-                onPress={onGoBackPress}
             >
-                Already A User?
-            </Text>
-        </Pressable>
-    </View>
+                <Text 
+                    style={styles.footer}
+                    onPress={onGoBackPress}
+                >
+                    Already A User?
+                </Text>
+            </Pressable>
+        </View>
+    </TouchableWithoutFeedback>
   )
 }
 

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, TextInput, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Button, TextInput, Pressable, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView } from 'react-native'
 import React ,{ useState, useContext}from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useNavigation } from '@react-navigation/native'
@@ -33,36 +33,43 @@ const LoginScreen = () => {
     }
 
     return (
-        <View style={styles.root}>
-          <Text style={styles.header}>User Login</Text>
-          <View style={styles.login}>
-            <ReusableInput
-              name='email'
-              control={control}
-              rules={{ required: 'Email is required' }}
-              placeholder='Email'
-            />
-            <ReusableInput
-              name='password'
-              control={control}
-              rules={{ required: 'Password is required' }}
-              placeholder='Password'
-            />
-            <ReusableButton
-              text={'Submit'}
-              onPress={handleSubmit(onSubmitPress)}
-            />
+        <TouchableWithoutFeedback 
+          onPress={Keyboard.dismiss}
+          accessible={false}  
+        >
+          <View style={styles.root}>
+           
+            <Text style={styles.header}>User Login</Text>
+            <View style={styles.login}>
+            <KeyboardAvoidingView>
+              <ReusableInput
+                name='email'
+                control={control}
+                rules={{ required: 'Email is required' }}
+                placeholder='Email'
+              />
+              <ReusableInput
+                name='password'
+                control={control}
+                rules={{ required: 'Password is required' }}
+                placeholder='Password'
+              />
+              </KeyboardAvoidingView>
+              <ReusableButton
+                text={'Submit'}
+                onPress={handleSubmit(onSubmitPress)}
+              />
+            </View>
+            <Pressable>
+              <Text 
+              style={styles.footer}
+              onPress={onCreateAccountPress}
+              >
+                Create Account
+            </Text>
+            </Pressable>
           </View>
-          <Pressable>
-            <Text 
-            style={styles.footer}
-            onPress={onCreateAccountPress}
-            >
-              Create Account
-           </Text>
-          </Pressable>
-
-        </View>
+        </TouchableWithoutFeedback>
       );
     }
     
@@ -85,7 +92,7 @@ const LoginScreen = () => {
       },
       login: {
         alignItems: 'center',
-        width: '80%',
+        width: '100%',
         margin: 25
       }
     });
